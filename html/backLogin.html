@@ -1,0 +1,213 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+  <title>翡翠学院-后台登陆</title>
+  <link href="../css/font-awesome/css/font-awesome.css" rel="stylesheet"/>
+  <link id="skin" rel="stylesheet" href="../css/ext-all.css"/>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+    }
+
+    .body {
+      background: #0d1953;
+      overflow: hidden;
+    }
+
+    img {
+      border: none;
+    }
+
+    canvas {
+      position: absolute;
+      top: 0;
+      left: 0;
+      z-index: 2;
+    }
+
+    .login_wrap {
+      width: 560px;
+      height: 320px;
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      margin-top: -180px;
+      margin-left: -280px;
+      z-index: 3;
+      color: #fff;
+    }
+
+    .login_wrap .logo {
+      margin-left: 140px;
+      margin-bottom: 29px;
+    }
+
+    .login_wrap input {
+      background: #0d1953;
+      width: 413px;
+      height: 34px;
+      line-height: 34px;
+      border: 1px solid #3c498a;
+      padding-left: 12px;
+      color: #fff;
+    }
+
+    input:focus {
+      outline: none;
+    }
+
+    .oneinput_box {
+      margin-bottom: 25px;
+      overflow: hidden;
+      width: 457px;
+      padding-left: 50px;
+    }
+
+    .oneinput_box * {
+      float: left;
+    }
+
+    .oneinput_box span {
+      background: #0d1953;
+      border: 1px solid #3c498a;
+      padding: 11px 9px;
+      border-right: none 0;
+      height: 12px;
+      width: 10px;
+      overflow: hidden;
+    }
+
+    .oneinput_box .icon {
+      font-size: 10px;
+      width: 9px;
+      height: 12px;
+    }
+
+    .erwei_code {
+      width: 91px;
+      height: 34px;
+      float: right;
+      cursor: pointer;
+    }
+
+    .btn {
+      width: 113px;
+      height: 34px;
+      line-height: 34px;
+      border: none;
+      color: #fff;
+      text-align: center;
+      cursor: pointer;
+    }
+
+    .btn-info {
+      background: #3cadcf;
+      float: left;
+    }
+
+    .btn-info:hover {
+      background: #1f8fb0;
+    }
+
+    .btn-success {
+      background: #5cb85c;
+      float: right;
+    }
+
+    .btn-success:hover {
+      background: #449d44;
+    }
+
+  </style>
+
+</head>
+
+<body class="body">
+<canvas width="1920" height="1000"></canvas>
+<div class="login_wrap">
+  <img class="logo" src="../images/back_logo.png"/>
+  <form>
+    <div class="oneinput_box">
+      <span class="icon"><i class="icon icon-user"></i></span>
+      <input id="loginId" type="text" placeholder="用户名"/>
+    </div>
+    <div class="oneinput_box">
+      <span class="icon"><i class="icon icon-lock"></i></span>
+      <input id="userPwd" type="password" placeholder="密码"/>
+    </div>
+    <div class="oneinput_box">
+      <span class="icon"><i class="icon icon-lock"></i></span>
+      <input id="validCode" type="text" style="width:310px" placeholder="验证码"/>
+      <img id="twoCodeImg" onclick="changeCode();" style="width:62px;height:30px;margin-left:10px;cursor:pointer;"
+           src="../images/validatecode.png"/>
+    </div>
+  </form>
+  <button class="btn btn-info" onclick="findBackPwd();">忘记密码?</button>
+  <button id="loginButton" class="btn btn-success" onclick="login();">登录</button>
+</div>
+</body>
+<script src="../lib/jquery-1.8.3.min.js" type="text/javascript"></script>
+<script src="../js/canvas_dote.js" type="text/javascript"></script>
+<script>
+  $(function () {
+
+    $("#loginId").focus();
+    //点击键盘登录
+    $(document).keypress(function (e) {
+      if (e.keyCode == 13) {
+        login();
+      }
+    });
+
+  });
+
+  //登录方法
+  function login() {
+
+    var loginId = $("#loginId").val(),
+      userPwd = $("#userPwd").val(),
+      validCode = $("#validCode").val();
+
+    if (loginId && userPwd && validCode) {
+      $("#loginButton").attr('disabled', true).text('登录中……');
+      $.ajax({
+        async: false,
+        url: "/Handler/AdminLoginAndRegHandler.ashx?action=login",
+        data: {
+          userName: loginId,
+          password: userPwd
+        },
+        type: "POST",
+        dataType: "json"
+      }).done(function (result) {
+
+        if (result.err) {
+          alert(result.err);
+        } else if (result.success) {
+          location.href = "backHome.html";
+        }
+      }).fail(function () {
+        alert("错误");
+      }).always(function () {
+        $("#loginButton").attr('disabled', false).text('登录');
+      });
+    }
+  }
+  ;
+
+  //忘记密码，找回密码
+  function findBackPwd() {
+    alert("暂未开通！");
+  }
+  ;
+
+  //验证码切换
+  function changeCode() {
+    //$("#twoCodeImg").attr('src','ValiCodeMaker?' + Math.random());
+  }
+  ;
+</script>
+</html>
